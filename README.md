@@ -17,7 +17,7 @@ The following commands can be used for format conversion.&#x20;
     MAESTRO mtx-to-h5	      #Convert mtx format to HDF5 format
     MAESTRO count-to-h5       #Convert plain text format to HDF5 format
 
-See <https://github.com/liulab-dfci/MAESTRO> for more information, or enter 'MAESTRO count-to-h5 --help' on the command line to ask for help.
+See <https://github.com/liulab-dfci/MAESTRO> for more information, or enter 'MAESTRO --help' on the command line to ask for help.
 
 We use R package "Seurat" to preprocess ST data. First we need load ST expression data from HDF5 file and create seurat object.
 
@@ -53,7 +53,7 @@ We perform quality control to filter out low quality spots. Generally, we consid
 
 To import spatial image information, create a folder named 'sample\_spatial'. This folder should contain both images and spot location information. Acceptable image formats include 'tissue\_hires\_image.png', 'tissue\_lowres\_image.png', 'sample\_HE.tiff', 'sample\_HE.png' and 'sample\_HE.jpeg'. Acceptable location information formats include 'tissue\_positions\_list.csv' and 'sample\_spot\_location.txt'. Additionally, we can also read in 'scalefactors\_json.json' for additional image information if available.ST\_object
 
-Read\_*image function is used to load images slot into ST\_*object, related code can be found in ST\_preprocess.R
+'Read\_image' function is used to load images slot into ST\_object, related code can be found in 'ST\_preprocess.R'
 
     image <- Read_image(sample = sample, spatial_dir = spatial_dir)
     DefaultAssay(object = image) <- 'RNA'
@@ -67,9 +67,9 @@ Save preprocessed data for future analysis.&#x20;
     saveRDS(ST_object, file = file.path(resDir, paste0(sample, "_filtered.rds")))
     writeh5(h5path = file.path(resDir, paste0(sample, "_gene_count_QC.h5")), count_data = h5_object@assays$RNA@data, genome_assembly = genome)
 
-**Note**: If you need to process multiple samples or multiple datasets, you can also perform batch processing through code in ST\_preprocess.R.
+**Note**: If you need to process multiple samples or multiple datasets, you can also perform batch processing through code in 'ST\_preprocess.R'.
 
-## &#x20;2 Intergrate scRNA data and ST data
+## 2 Intergrate scRNA data and ST data
 
 ### 2.1 Download scRNA-seq data
 
@@ -85,7 +85,7 @@ We should perform basic analysis on scRNA data and prepare input file required b
 
 #### 2.3.1 Deconvolution
 
-STRIDE deconvolution的使用方法和结果的意义请看STRIDE网页的说明，或者通过--help获得帮助。
+See <https://github.com/wanglabtongji/STRIDE> for more information, or enter 'STRIDE deconvolve --help' for help.
 
     STRIDE deconvolve --sc-count Data/GSE213699/suppl/scRNA/OV\_GSE154600\_count\_gene\_count.h5 \ 
     --sc-celltype Data/GSE213699/suppl/scRNA/OV\_GSE154600\_celltype\_curated.txt \ 
@@ -94,23 +94,20 @@ STRIDE deconvolution的使用方法和结果的意义请看STRIDE网页的说明
     --outdir Data/GSE213699/suppl/stride_result/${sample} 
     --outprefix ${sample} --normalize;
 
-Note:对于同一个空转数据集中的同一癌症类型（或癌症亚型）的空转数据，可以使用同一套对应的单细胞数据进行批量反卷积
 
-#### 2.3.2 评估deconvolution结果
+#### 2.3.2 Evaluate deconvolution results
 
-不同次反卷积的结果会有差异，不同reference也会产生差异，
-
-我们需要评估反卷积的结果，需要计算signature score和deconvolution faction之间的correlation，一般来说，如果correlation大于0.3，我们认为deconvolution结果可以接受，否则，需要重新run STRIDE deconvolution或者换一套reference.可以根据以下code进行marker signature score和计算correlation.
+We need to evaluate the results of deconvolution by calculating the correlation between the gene signature score and the deconvolution faction. Gene list for signature score is derived from single cell data. Generally, if the correlation is greater than 0.3, we believe that the deconvolution result meets the requirements. Otherwise, we need to re-run STRIDE deconvolution or change the single cell references. Gene signature score and correlation can be calculated according to the following code.
 
 ### 2.4 Mapping by STRIDE
 
-为了进行下游的spatial CCI, spatial GRN分析，我们需要将单细胞映射到空间位置上，从而将空转基因表达数据拆分成单细胞数据。
+In order to perform downstream spatial CCI and spatial GRN analysis, we need to map single cells to spatial locations.
 
 #### 2.4.1 Mapping
 
 
 
-#### 2.4.2 组成单细胞分辨率的空间转录组数据&#x20;
+#### 2.4.2 Single-cell transcriptome data with spatial location
 
 
 
